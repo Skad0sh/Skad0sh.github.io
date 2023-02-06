@@ -8,12 +8,12 @@
     <language>en-us</language>
     <lastBuildDate>Mon, 06 Feb 2023 14:41:28 +0530</lastBuildDate><atom:link href="https://sk4d.tk/posts/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>My First Post</title>
-      <link>https://sk4d.tk/posts/my-first-post/</link>
+      <title>scorescope Writeup [DiceCTF 23]</title>
+      <link>https://sk4d.tk/posts/scorescope-dicectf-2023/</link>
       <pubDate>Mon, 06 Feb 2023 14:41:28 +0530</pubDate>
       
-      <guid>https://sk4d.tk/posts/my-first-post/</guid>
-      <description>Myfirst blog </description>
+      <guid>https://sk4d.tk/posts/scorescope-dicectf-2023/</guid>
+      <description>tl;dr sys.modules to print all the app modules python prototype pollution intro I played DiceCTF 2023 last weekend with my team bi0s. There a were a lot of awesome web challenges. I have worked on some of the web challenges and this is the write-up for the challenge scorescope</description>
     </item>
     
   </channel>
