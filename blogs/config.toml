@@ -1,5 +1,0 @@
-baseURL = 'https://sk4d.tk/'
-languageCode = 'en-us'
-title = 'My New Hugo Site'
-theme = 'cactus'
-publishDir = "../docs"
