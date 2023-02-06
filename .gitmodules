@@ -1,0 +1,3 @@
+[submodule "blogs/themes/cactus"]
+	path = blogs/themes/cactus
+	url = https://github.com/monkeyWzr/hugo-theme-cactus.git
