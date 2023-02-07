@@ -13,7 +13,7 @@
       <pubDate>Mon, 06 Feb 2023 14:41:28 +0530</pubDate>
       
       <guid>https://sk4d.tk/posts/scorescope-dicectf-2023/</guid>
-      <description>tl;dr sys.modules to print all the app modules python prototype pollution intro I played DiceCTF 2023 last weekend with my team bi0s. There a were a lot of awesome web challenges. I have worked on some of the web challenges and this is the write-up for the challenge scorescope
+      <description>tl;dr read output using ValueError sys.modules to print all the app modules go through the module classes and find the test case functions and re-write them to always return true intro I played DiceCTF 2023 last weekend with my team bi0s. There a were a lot of awesome web challenges. I have worked on some of the web challenges and this is the write-up for the challenge scorescope
 Initial analysis We are allowed to upload a python file and the application will run several test cases on the file and if the test cases are successful it will be reflected on the page with a green colour.</description>
     </item>
     

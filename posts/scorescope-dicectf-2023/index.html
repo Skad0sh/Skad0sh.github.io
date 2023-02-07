@@ -16,7 +16,7 @@
   <meta name="robots" content="all,follow">
   <meta name="googlebot" content="index,follow,snippet,archive">
   <meta property="og:title" content="scorescope Writeup [DiceCTF 23]" />
-<meta property="og:description" content="tl;dr sys.modules to print all the app modules python prototype pollution intro I played DiceCTF 2023 last weekend with my team bi0s. There a were a lot of awesome web challenges. I have worked on some of the web challenges and this is the write-up for the challenge scorescope
+<meta property="og:description" content="tl;dr read output using ValueError sys.modules to print all the app modules go through the module classes and find the test case functions and re-write them to always return true intro I played DiceCTF 2023 last weekend with my team bi0s. There a were a lot of awesome web challenges. I have worked on some of the web challenges and this is the write-up for the challenge scorescope
 Initial analysis We are allowed to upload a python file and the application will run several test cases on the file and if the test cases are successful it will be reflected on the page with a green colour." />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://sk4d.tk/posts/scorescope-dicectf-2023/" /><meta property="article:section" content="posts" />
@@ -26,7 +26,7 @@ Initial analysis We are allowed to upload a python file and the application will
 
   <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="scorescope Writeup [DiceCTF 23]"/>
-<meta name="twitter:description" content="tl;dr sys.modules to print all the app modules python prototype pollution intro I played DiceCTF 2023 last weekend with my team bi0s. There a were a lot of awesome web challenges. I have worked on some of the web challenges and this is the write-up for the challenge scorescope
+<meta name="twitter:description" content="tl;dr read output using ValueError sys.modules to print all the app modules go through the module classes and find the test case functions and re-write them to always return true intro I played DiceCTF 2023 last weekend with my team bi0s. There a were a lot of awesome web challenges. I have worked on some of the web challenges and this is the write-up for the challenge scorescope
 Initial analysis We are allowed to upload a python file and the application will run several test cases on the file and if the test cases are successful it will be reflected on the page with a green colour."/>
 
   
@@ -129,7 +129,7 @@ Initial analysis We are allowed to upload a python file and the application will
     </a>
   </li>
   <li>
-    <a class="icon" href="http://www.tumblr.com/share/link?url=https%3a%2f%2fsk4d.tk%2fposts%2fscorescope-dicectf-2023%2f&name=scorescope%20Writeup%20%5bDiceCTF%2023%5d&description=tl%3bdr%20sys.modules%20to%20print%20all%20the%20app%20modules%20python%20prototype%20pollution%20intro%20I%20played%20DiceCTF%202023%20last%20weekend%20with%20my%20team%20bi0s.%20There%20a%20were%20a%20lot%20of%20awesome%20web%20challenges.%20I%20have%20worked%20on%20some%20of%20the%20web%20challenges%20and%20this%20is%20the%20write-up%20for%20the%20challenge%20scorescope%0aInitial%20analysis%20We%20are%20allowed%20to%20upload%20a%20python%20file%20and%20the%20application%20will%20run%20several%20test%20cases%20on%20the%20file%20and%20if%20the%20test%20cases%20are%20successful%20it%20will%20be%20reflected%20on%20the%20page%20with%20a%20green%20colour." aria-label="Tumblr">
+    <a class="icon" href="http://www.tumblr.com/share/link?url=https%3a%2f%2fsk4d.tk%2fposts%2fscorescope-dicectf-2023%2f&name=scorescope%20Writeup%20%5bDiceCTF%2023%5d&description=tl%3bdr%20read%20output%20using%20ValueError%20sys.modules%20to%20print%20all%20the%20app%20modules%20go%20through%20the%20module%20classes%20and%20find%20the%20test%20case%20functions%20and%20re-write%20them%20to%20always%20return%20true%20intro%20I%20played%20DiceCTF%202023%20last%20weekend%20with%20my%20team%20bi0s.%20There%20a%20were%20a%20lot%20of%20awesome%20web%20challenges.%20I%20have%20worked%20on%20some%20of%20the%20web%20challenges%20and%20this%20is%20the%20write-up%20for%20the%20challenge%20scorescope%0aInitial%20analysis%20We%20are%20allowed%20to%20upload%20a%20python%20file%20and%20the%20application%20will%20run%20several%20test%20cases%20on%20the%20file%20and%20if%20the%20test%20cases%20are%20successful%20it%20will%20be%20reflected%20on%20the%20page%20with%20a%20green%20colour." aria-label="Tumblr">
       <i class="fab fa-tumblr " aria-hidden="true"></i>
     </a>
   </li>
@@ -148,6 +148,7 @@ Initial analysis We are allowed to upload a python file and the application will
     <li><a href="#intro">intro</a></li>
     <li><a href="#initial-analysis">Initial analysis</a></li>
     <li><a href="#exploitation">Exploitation</a></li>
+    <li><a href="#conclusion">Conclusion</a></li>
   </ul>
 </nav>
     </div>
@@ -180,8 +181,9 @@ Initial analysis We are allowed to upload a python file and the application will
     <div class="content" itemprop="articleBody">
       <h1 id="tldr">tl;dr</h1>
 <ul>
+<li>read output using ValueError</li>
 <li>sys.modules to print all the app modules</li>
-<li>python prototype pollution</li>
+<li>go through the module classes and find the test case functions and re-write them to always return true</li>
 </ul>
 <h2 id="intro">intro</h2>
 <p>I played DiceCTF 2023 last weekend with my team <strong>bi0s</strong>. There a were a lot of awesome web challenges. I have worked on some of the web challenges and this is the write-up for the challenge scorescope</p>
@@ -250,7 +252,10 @@ Initial analysis We are allowed to upload a python file and the application will
 </span></span><span style="display:flex;"><span>    test_2_longest<span style="color:#f92672">.</span>TestLongest<span style="color:#f92672">.</span>test_longest_multiple <span style="color:#f92672">=</span> <span style="color:#66d9ef">lambda</span> s: <span style="color:#66d9ef">True</span>
 </span></span><span style="display:flex;"><span>    test_2_longest<span style="color:#f92672">.</span>TestLongest<span style="color:#f92672">.</span>test_longest_single <span style="color:#f92672">=</span> <span style="color:#66d9ef">lambda</span> s: <span style="color:#66d9ef">True</span>
 </span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> a<span style="color:#f92672">+</span>b
-</span></span></code></pre></div><p>This was our final payload for the scorescope challenge , uploading this template.py file will turns all the test cases true and the application gives us the flag.</p>
+</span></span></code></pre></div><p>This was our final payload for the scorescope challenge , uploading this template.py file will turns all the test cases true and the application gives us the flag. You can ignore the <code>__class__</code> in our payload because it only points to the TestHidden class itself and you can just do which will also make the hidden test case true</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>test_8_hidden<span style="color:#f92672">.</span>TestHidden<span style="color:#f92672">.</span>hidden_test <span style="color:#f92672">=</span> <span style="color:#66d9ef">lambda</span> s: <span style="color:#66d9ef">True</span>
+</span></span></code></pre></div><h2 id="conclusion">Conclusion</h2>
+<p>Thanks to the DiceCTF 2023 organizers for the amazing web challenges as always :)</p>
 
     </div>
   </article>
@@ -279,6 +284,7 @@ Initial analysis We are allowed to upload a python file and the application will
     <li><a href="#intro">intro</a></li>
     <li><a href="#initial-analysis">Initial analysis</a></li>
     <li><a href="#exploitation">Exploitation</a></li>
+    <li><a href="#conclusion">Conclusion</a></li>
   </ul>
 </nav>
     </div>
@@ -328,7 +334,7 @@ Initial analysis We are allowed to upload a python file and the application will
     </a>
   </li>
   <li>
-    <a class="icon" href="http://www.tumblr.com/share/link?url=https%3a%2f%2fsk4d.tk%2fposts%2fscorescope-dicectf-2023%2f&name=scorescope%20Writeup%20%5bDiceCTF%2023%5d&description=tl%3bdr%20sys.modules%20to%20print%20all%20the%20app%20modules%20python%20prototype%20pollution%20intro%20I%20played%20DiceCTF%202023%20last%20weekend%20with%20my%20team%20bi0s.%20There%20a%20were%20a%20lot%20of%20awesome%20web%20challenges.%20I%20have%20worked%20on%20some%20of%20the%20web%20challenges%20and%20this%20is%20the%20write-up%20for%20the%20challenge%20scorescope%0aInitial%20analysis%20We%20are%20allowed%20to%20upload%20a%20python%20file%20and%20the%20application%20will%20run%20several%20test%20cases%20on%20the%20file%20and%20if%20the%20test%20cases%20are%20successful%20it%20will%20be%20reflected%20on%20the%20page%20with%20a%20green%20colour." aria-label="Tumblr">
+    <a class="icon" href="http://www.tumblr.com/share/link?url=https%3a%2f%2fsk4d.tk%2fposts%2fscorescope-dicectf-2023%2f&name=scorescope%20Writeup%20%5bDiceCTF%2023%5d&description=tl%3bdr%20read%20output%20using%20ValueError%20sys.modules%20to%20print%20all%20the%20app%20modules%20go%20through%20the%20module%20classes%20and%20find%20the%20test%20case%20functions%20and%20re-write%20them%20to%20always%20return%20true%20intro%20I%20played%20DiceCTF%202023%20last%20weekend%20with%20my%20team%20bi0s.%20There%20a%20were%20a%20lot%20of%20awesome%20web%20challenges.%20I%20have%20worked%20on%20some%20of%20the%20web%20challenges%20and%20this%20is%20the%20write-up%20for%20the%20challenge%20scorescope%0aInitial%20analysis%20We%20are%20allowed%20to%20upload%20a%20python%20file%20and%20the%20application%20will%20run%20several%20test%20cases%20on%20the%20file%20and%20if%20the%20test%20cases%20are%20successful%20it%20will%20be%20reflected%20on%20the%20page%20with%20a%20green%20colour." aria-label="Tumblr">
       <i class="fab fa-tumblr fa-lg" aria-hidden="true"></i>
     </a>
   </li>
