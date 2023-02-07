@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Posts on My New Hugo Site</title>
+    <title>Posts on ./sk4d</title>
     <link>https://sk4d.tk/posts/</link>
-    <description>Recent content in Posts on My New Hugo Site</description>
+    <description>Recent content in Posts on ./sk4d</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <lastBuildDate>Mon, 06 Feb 2023 14:41:28 +0530</lastBuildDate><atom:link href="https://sk4d.tk/posts/index.xml" rel="self" type="application/rss+xml" />
@@ -13,7 +13,8 @@
       <pubDate>Mon, 06 Feb 2023 14:41:28 +0530</pubDate>
       
       <guid>https://sk4d.tk/posts/scorescope-dicectf-2023/</guid>
-      <description>tl;dr sys.modules to print all the app modules python prototype pollution intro I played DiceCTF 2023 last weekend with my team bi0s. There a were a lot of awesome web challenges. I have worked on some of the web challenges and this is the write-up for the challenge scorescope</description>
+      <description>tl;dr sys.modules to print all the app modules python prototype pollution intro I played DiceCTF 2023 last weekend with my team bi0s. There a were a lot of awesome web challenges. I have worked on some of the web challenges and this is the write-up for the challenge scorescope
+Initial analysis We are allowed to upload a python file and the application will run several test cases on the file and if the test cases are successful it will be reflected on the page with a green colour.</description>
     </item>
     
   </channel>

