@@ -9,32 +9,26 @@
   <link rel="stylesheet" href="https://latest.cactus.chat/style.css" type="text/css">
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title> valentine - hxpCTF 2023 | ./sk4d</title>
+  <title> valentine Writeup [hxpCTF 23] | ./sk4d</title>
   <link rel = 'canonical' href = 'https://sk4d.tk/posts/valentine-hxpctf2023/'>
   <meta name="description" content="My name is Rahul Sunder and I am a 20-year-old Web security enthusiast from India. I am a member of [Team bi0s](https://ctftime.org/team/662), India&#39;s top CTF team, where I conduct research on Web security and play CTF&#39;s. I am passionate about staying up-to-date with the latest security tools and techniques and constantly seek new challenges and opportunities to advance my skills. I enjoy participating in CTF competitions and collaborating with other security professionals in my free time.">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="robots" content="all,follow">
   <meta name="googlebot" content="index,follow,snippet,archive">
-  <meta property="og:title" content="valentine - hxpCTF 2023" />
+  <meta property="og:title" content="valentine Writeup [hxpCTF 23]" />
 <meta property="og:description" content="tl;dr
-
-SSTI in the valentine card
-bypass filter by setting ejs delimiter option
-RCE :yay:
-" />
+SSTI in the valentine card bypass filter by setting ejs delimiter option RCE :yay: intro I played hxpCTF 2023 last weekend with my team bi0s. There a were a lot of awesome web challenges. I have worked on most of the web challenges and this is the write-up for the challenge valentine
+Initial analysis The application lets us to create a fully customisable valentines card. The application asks us to personalize our card using the &lt;%= name %&gt; tags and it gets replaced with the value in the name parameter we send to the template, this can be seen in the source" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://sk4d.tk/posts/valentine-hxpctf2023/" /><meta property="article:section" content="posts" />
-<meta property="article:published_time" content="2023-03-15T17:30:38+00:00" />
-<meta property="article:modified_time" content="2023-03-15T17:30:38+00:00" />
+<meta property="article:published_time" content="2023-03-15T17:30:38+06:30" />
+<meta property="article:modified_time" content="2023-03-15T17:30:38+06:30" />
 
   <meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="valentine - hxpCTF 2023"/>
+<meta name="twitter:title" content="valentine Writeup [hxpCTF 23]"/>
 <meta name="twitter:description" content="tl;dr
-
-SSTI in the valentine card
-bypass filter by setting ejs delimiter option
-RCE :yay:
-"/>
+SSTI in the valentine card bypass filter by setting ejs delimiter option RCE :yay: intro I played hxpCTF 2023 last weekend with my team bi0s. There a were a lot of awesome web challenges. I have worked on most of the web challenges and this is the write-up for the challenge valentine
+Initial analysis The application lets us to create a fully customisable valentines card. The application asks us to personalize our card using the &lt;%= name %&gt; tags and it gets replaced with the value in the name parameter we send to the template, this can be seen in the source"/>
 
   
   
@@ -114,42 +108,42 @@ RCE :yay:
     </a>
   </li>
   <li>
-    <a class="icon" href="https://twitter.com/share?url=https%3a%2f%2fsk4d.tk%2fposts%2fvalentine-hxpctf2023%2f&text=valentine%20-%20hxpCTF%202023" aria-label="Twitter">
+    <a class="icon" href="https://twitter.com/share?url=https%3a%2f%2fsk4d.tk%2fposts%2fvalentine-hxpctf2023%2f&text=valentine%20Writeup%20%5bhxpCTF%2023%5d" aria-label="Twitter">
       <i class="fab fa-twitter " aria-hidden="true"></i>
     </a>
   </li>
   <li>
-    <a class="icon" href="http://www.linkedin.com/shareArticle?url=https%3a%2f%2fsk4d.tk%2fposts%2fvalentine-hxpctf2023%2f&title=valentine%20-%20hxpCTF%202023" aria-label="Linkedin">
+    <a class="icon" href="http://www.linkedin.com/shareArticle?url=https%3a%2f%2fsk4d.tk%2fposts%2fvalentine-hxpctf2023%2f&title=valentine%20Writeup%20%5bhxpCTF%2023%5d" aria-label="Linkedin">
       <i class="fab fa-linkedin " aria-hidden="true"></i>
     </a>
   </li>
   <li>
-    <a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=https%3a%2f%2fsk4d.tk%2fposts%2fvalentine-hxpctf2023%2f&is_video=false&description=valentine%20-%20hxpCTF%202023" aria-label="Pinterest">
+    <a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=https%3a%2f%2fsk4d.tk%2fposts%2fvalentine-hxpctf2023%2f&is_video=false&description=valentine%20Writeup%20%5bhxpCTF%2023%5d" aria-label="Pinterest">
       <i class="fab fa-pinterest " aria-hidden="true"></i>
     </a>
   </li>
   <li>
-    <a class="icon" href="mailto:?subject=valentine%20-%20hxpCTF%202023&body=Check out this article: https%3a%2f%2fsk4d.tk%2fposts%2fvalentine-hxpctf2023%2f" aria-label="Email">
+    <a class="icon" href="mailto:?subject=valentine%20Writeup%20%5bhxpCTF%2023%5d&body=Check out this article: https%3a%2f%2fsk4d.tk%2fposts%2fvalentine-hxpctf2023%2f" aria-label="Email">
       <i class="fas fa-envelope " aria-hidden="true"></i>
     </a>
   </li>
   <li>
-    <a class="icon" href="https://getpocket.com/save?url=https%3a%2f%2fsk4d.tk%2fposts%2fvalentine-hxpctf2023%2f&title=valentine%20-%20hxpCTF%202023" aria-label="Pocket">
+    <a class="icon" href="https://getpocket.com/save?url=https%3a%2f%2fsk4d.tk%2fposts%2fvalentine-hxpctf2023%2f&title=valentine%20Writeup%20%5bhxpCTF%2023%5d" aria-label="Pocket">
       <i class="fab fa-get-pocket " aria-hidden="true"></i>
     </a>
   </li>
   <li>
-    <a class="icon" href="http://reddit.com/submit?url=https%3a%2f%2fsk4d.tk%2fposts%2fvalentine-hxpctf2023%2f&title=valentine%20-%20hxpCTF%202023" aria-label="reddit">
+    <a class="icon" href="http://reddit.com/submit?url=https%3a%2f%2fsk4d.tk%2fposts%2fvalentine-hxpctf2023%2f&title=valentine%20Writeup%20%5bhxpCTF%2023%5d" aria-label="reddit">
       <i class="fab fa-reddit " aria-hidden="true"></i>
     </a>
   </li>
   <li>
-    <a class="icon" href="http://www.tumblr.com/share/link?url=https%3a%2f%2fsk4d.tk%2fposts%2fvalentine-hxpctf2023%2f&name=valentine%20-%20hxpCTF%202023&description=%3cp%3e%3cstrong%3etl%3bdr%3c%2fstrong%3e%3c%2fp%3e%0a%3cul%3e%0a%3cli%3eSSTI%20in%20the%20valentine%20card%3c%2fli%3e%0a%3cli%3ebypass%20filter%20by%20setting%20ejs%20delimiter%20option%3c%2fli%3e%0a%3cli%3eRCE%20%3ayay%3a%3c%2fli%3e%0a%3c%2ful%3e" aria-label="Tumblr">
+    <a class="icon" href="http://www.tumblr.com/share/link?url=https%3a%2f%2fsk4d.tk%2fposts%2fvalentine-hxpctf2023%2f&name=valentine%20Writeup%20%5bhxpCTF%2023%5d&description=tl%3bdr%0aSSTI%20in%20the%20valentine%20card%20bypass%20filter%20by%20setting%20ejs%20delimiter%20option%20RCE%20%3ayay%3a%20intro%20I%20played%20hxpCTF%202023%20last%20weekend%20with%20my%20team%20bi0s.%20There%20a%20were%20a%20lot%20of%20awesome%20web%20challenges.%20I%20have%20worked%20on%20most%20of%20the%20web%20challenges%20and%20this%20is%20the%20write-up%20for%20the%20challenge%20valentine%0aInitial%20analysis%20The%20application%20lets%20us%20to%20create%20a%20fully%20customisable%20valentines%20card.%20The%20application%20asks%20us%20to%20personalize%20our%20card%20using%20the%20%26lt%3b%25%3d%20name%20%25%26gt%3b%20tags%20and%20it%20gets%20replaced%20with%20the%20value%20in%20the%20name%20parameter%20we%20send%20to%20the%20template%2c%20this%20can%20be%20seen%20in%20the%20source" aria-label="Tumblr">
       <i class="fab fa-tumblr " aria-hidden="true"></i>
     </a>
   </li>
   <li>
-    <a class="icon" href="https://news.ycombinator.com/submitlink?u=https%3a%2f%2fsk4d.tk%2fposts%2fvalentine-hxpctf2023%2f&t=valentine%20-%20hxpCTF%202023" aria-label="Hacker News">
+    <a class="icon" href="https://news.ycombinator.com/submitlink?u=https%3a%2f%2fsk4d.tk%2fposts%2fvalentine-hxpctf2023%2f&t=valentine%20Writeup%20%5bhxpCTF%2023%5d" aria-label="Hacker News">
       <i class="fab fa-hacker-news " aria-hidden="true"></i>
     </a>
   </li>
@@ -176,34 +170,18 @@ RCE :yay:
   <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
     <header>
       <h1 class="posttitle" itemprop="name headline">
-        valentine - hxpCTF 2023
+        valentine Writeup [hxpCTF 23]
       </h1>
       <div class="meta">
         
         <div class="postdate">
           
-          <time datetime="2023-03-15 17:30:38 &#43;0000 UTC" itemprop="datePublished">2023-03-15</time>
+          <time datetime="2023-03-15 17:30:38 &#43;0630 &#43;0630" itemprop="datePublished">2023-03-15</time>
           
         </div>
         
         
         
-        <div class="article-category">
-            <i class="fas fa-archive"></i>
-            
-            
-            <a class="category-link" href="/categories/web">Web</a>
-            
-        </div>
-        
-        
-        <div class="article-tag">
-            <i class="fas fa-tag"></i>
-            
-            
-            <a class="tag-link" href="/tags/hxpctf" rel="tag">hxpCTF</a>
-            
-        </div>
         
       </div>
     </header>
@@ -217,9 +195,6 @@ RCE :yay:
 <li>bypass filter by setting ejs delimiter option</li>
 <li>RCE :yay:</li>
 </ul>
-<p><strong>Challenge Points</strong>: 80
-<strong>No. of solves</strong>: 116
-<strong>Solved by</strong>: <a href="https://twitter.com/RahulSundar8">sk4d</a></p>
 <h2 id="intro">intro</h2>
 <p>I played hxpCTF 2023 last weekend with my team <strong>bi0s</strong>. There a were a lot of awesome web challenges. I have worked on most of the web challenges and this is the write-up for the challenge valentine</p>
 <h2 id="initial-analysis">Initial analysis</h2>
@@ -248,6 +223,7 @@ RCE :yay:
 <pre tabindex="0"><code>hxp{W1ll_u_b3_my_V4l3nt1ne?}
 </code></pre><h2 id="closing-thoughts">Closing thoughts</h2>
 <p>Thanks to the hxpCTF 2022 <code>-_(0_0)_-</code> organizers. The challenges were fun and we learnt a ton :)</p>
+
     </div>
   </article>
 
@@ -296,42 +272,42 @@ RCE :yay:
     </a>
   </li>
   <li>
-    <a class="icon" href="https://twitter.com/share?url=https%3a%2f%2fsk4d.tk%2fposts%2fvalentine-hxpctf2023%2f&text=valentine%20-%20hxpCTF%202023" aria-label="Twitter">
+    <a class="icon" href="https://twitter.com/share?url=https%3a%2f%2fsk4d.tk%2fposts%2fvalentine-hxpctf2023%2f&text=valentine%20Writeup%20%5bhxpCTF%2023%5d" aria-label="Twitter">
       <i class="fab fa-twitter fa-lg" aria-hidden="true"></i>
     </a>
   </li>
   <li>
-    <a class="icon" href="http://www.linkedin.com/shareArticle?url=https%3a%2f%2fsk4d.tk%2fposts%2fvalentine-hxpctf2023%2f&title=valentine%20-%20hxpCTF%202023" aria-label="Linkedin">
+    <a class="icon" href="http://www.linkedin.com/shareArticle?url=https%3a%2f%2fsk4d.tk%2fposts%2fvalentine-hxpctf2023%2f&title=valentine%20Writeup%20%5bhxpCTF%2023%5d" aria-label="Linkedin">
       <i class="fab fa-linkedin fa-lg" aria-hidden="true"></i>
     </a>
   </li>
   <li>
-    <a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=https%3a%2f%2fsk4d.tk%2fposts%2fvalentine-hxpctf2023%2f&is_video=false&description=valentine%20-%20hxpCTF%202023" aria-label="Pinterest">
+    <a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=https%3a%2f%2fsk4d.tk%2fposts%2fvalentine-hxpctf2023%2f&is_video=false&description=valentine%20Writeup%20%5bhxpCTF%2023%5d" aria-label="Pinterest">
       <i class="fab fa-pinterest fa-lg" aria-hidden="true"></i>
     </a>
   </li>
   <li>
-    <a class="icon" href="mailto:?subject=valentine%20-%20hxpCTF%202023&body=Check out this article: https%3a%2f%2fsk4d.tk%2fposts%2fvalentine-hxpctf2023%2f" aria-label="Email">
+    <a class="icon" href="mailto:?subject=valentine%20Writeup%20%5bhxpCTF%2023%5d&body=Check out this article: https%3a%2f%2fsk4d.tk%2fposts%2fvalentine-hxpctf2023%2f" aria-label="Email">
       <i class="fas fa-envelope fa-lg" aria-hidden="true"></i>
     </a>
   </li>
   <li>
-    <a class="icon" href="https://getpocket.com/save?url=https%3a%2f%2fsk4d.tk%2fposts%2fvalentine-hxpctf2023%2f&title=valentine%20-%20hxpCTF%202023" aria-label="Pocket">
+    <a class="icon" href="https://getpocket.com/save?url=https%3a%2f%2fsk4d.tk%2fposts%2fvalentine-hxpctf2023%2f&title=valentine%20Writeup%20%5bhxpCTF%2023%5d" aria-label="Pocket">
       <i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i>
     </a>
   </li>
   <li>
-    <a class="icon" href="http://reddit.com/submit?url=https%3a%2f%2fsk4d.tk%2fposts%2fvalentine-hxpctf2023%2f&title=valentine%20-%20hxpCTF%202023" aria-label="reddit">
+    <a class="icon" href="http://reddit.com/submit?url=https%3a%2f%2fsk4d.tk%2fposts%2fvalentine-hxpctf2023%2f&title=valentine%20Writeup%20%5bhxpCTF%2023%5d" aria-label="reddit">
       <i class="fab fa-reddit fa-lg" aria-hidden="true"></i>
     </a>
   </li>
   <li>
-    <a class="icon" href="http://www.tumblr.com/share/link?url=https%3a%2f%2fsk4d.tk%2fposts%2fvalentine-hxpctf2023%2f&name=valentine%20-%20hxpCTF%202023&description=%3cp%3e%3cstrong%3etl%3bdr%3c%2fstrong%3e%3c%2fp%3e%0a%3cul%3e%0a%3cli%3eSSTI%20in%20the%20valentine%20card%3c%2fli%3e%0a%3cli%3ebypass%20filter%20by%20setting%20ejs%20delimiter%20option%3c%2fli%3e%0a%3cli%3eRCE%20%3ayay%3a%3c%2fli%3e%0a%3c%2ful%3e" aria-label="Tumblr">
+    <a class="icon" href="http://www.tumblr.com/share/link?url=https%3a%2f%2fsk4d.tk%2fposts%2fvalentine-hxpctf2023%2f&name=valentine%20Writeup%20%5bhxpCTF%2023%5d&description=tl%3bdr%0aSSTI%20in%20the%20valentine%20card%20bypass%20filter%20by%20setting%20ejs%20delimiter%20option%20RCE%20%3ayay%3a%20intro%20I%20played%20hxpCTF%202023%20last%20weekend%20with%20my%20team%20bi0s.%20There%20a%20were%20a%20lot%20of%20awesome%20web%20challenges.%20I%20have%20worked%20on%20most%20of%20the%20web%20challenges%20and%20this%20is%20the%20write-up%20for%20the%20challenge%20valentine%0aInitial%20analysis%20The%20application%20lets%20us%20to%20create%20a%20fully%20customisable%20valentines%20card.%20The%20application%20asks%20us%20to%20personalize%20our%20card%20using%20the%20%26lt%3b%25%3d%20name%20%25%26gt%3b%20tags%20and%20it%20gets%20replaced%20with%20the%20value%20in%20the%20name%20parameter%20we%20send%20to%20the%20template%2c%20this%20can%20be%20seen%20in%20the%20source" aria-label="Tumblr">
       <i class="fab fa-tumblr fa-lg" aria-hidden="true"></i>
     </a>
   </li>
   <li>
-    <a class="icon" href="https://news.ycombinator.com/submitlink?u=https%3a%2f%2fsk4d.tk%2fposts%2fvalentine-hxpctf2023%2f&t=valentine%20-%20hxpCTF%202023" aria-label="Hacker News">
+    <a class="icon" href="https://news.ycombinator.com/submitlink?u=https%3a%2f%2fsk4d.tk%2fposts%2fvalentine-hxpctf2023%2f&t=valentine%20Writeup%20%5bhxpCTF%2023%5d" aria-label="Hacker News">
       <i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i>
     </a>
   </li>

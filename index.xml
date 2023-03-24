@@ -6,19 +6,16 @@
     <description>Recent content on ./sk4d</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Wed, 15 Mar 2023 17:30:38 +0000</lastBuildDate><atom:link href="https://sk4d.tk/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Wed, 15 Mar 2023 17:30:38 +0630</lastBuildDate><atom:link href="https://sk4d.tk/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>valentine - hxpCTF 2023</title>
+      <title>valentine Writeup [hxpCTF 23]</title>
       <link>https://sk4d.tk/posts/valentine-hxpctf2023/</link>
-      <pubDate>Wed, 15 Mar 2023 17:30:38 +0000</pubDate>
+      <pubDate>Wed, 15 Mar 2023 17:30:38 +0630</pubDate>
       
       <guid>https://sk4d.tk/posts/valentine-hxpctf2023/</guid>
-      <description>&lt;p&gt;&lt;strong&gt;tl;dr&lt;/strong&gt;&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;SSTI in the valentine card&lt;/li&gt;
-&lt;li&gt;bypass filter by setting ejs delimiter option&lt;/li&gt;
-&lt;li&gt;RCE :yay:&lt;/li&gt;
-&lt;/ul&gt;</description>
+      <description>tl;dr
+SSTI in the valentine card bypass filter by setting ejs delimiter option RCE :yay: intro I played hxpCTF 2023 last weekend with my team bi0s. There a were a lot of awesome web challenges. I have worked on most of the web challenges and this is the write-up for the challenge valentine
+Initial analysis The application lets us to create a fully customisable valentines card. The application asks us to personalize our card using the &amp;lt;%= name %&amp;gt; tags and it gets replaced with the value in the name parameter we send to the template, this can be seen in the source</description>
     </item>
     
     <item>
